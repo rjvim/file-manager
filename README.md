@@ -3,7 +3,7 @@
 You can install the package via composer:
 
 ``` bash
-composer require rjvim/permiso
+composer require rjvim/file-manger
 ```
 
 The package will automatically register itself.

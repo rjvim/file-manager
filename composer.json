@@ -24,13 +24,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Betalectic\\Permiso\\": "src"
+            "Betalectic\\FileManager\\": "src"
         }
     },
 
     "autoload-dev": {
         "psr-4": {
-            "Betalectic\\Permiso\\Test\\": "tests"
+            "Betalectic\\FileManager\\Test\\": "tests"
         }
     },
     "scripts": {
@@ -42,7 +42,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Betalectic\\Permiso\\PermisoServiceProvider"
+                "Betalectic\\FileManager\\FileManagerServiceProvider"
             ]
         }
     }

@@ -1,9 +1,5 @@
-Get all permissions
+Get all files
 ====
 
-/permiso/permissions
+/file
 
-Filter permissions
-====
-
-/permiso/permissions?entities[]=App\BusinessUnit&entities[]=App\Asset
