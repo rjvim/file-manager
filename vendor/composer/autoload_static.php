@@ -4,15 +4,15 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitd766ae561435d174f5349e61a1b52aa2
+class ComposerStaticInit1cc37832480b2c2b76bd2a207bc0d92c
 {
     public static $files = array (
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
-        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
@@ -158,8 +158,8 @@ class ComposerStaticInitd766ae561435d174f5349e61a1b52aa2
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
         ),
         'Zend\\Diactoros\\' => 
         array (
@@ -308,8 +308,8 @@ class ComposerStaticInitd766ae561435d174f5349e61a1b52aa2
         ),
         'Illuminate\\Notifications\\' => 
         array (
-            0 => __DIR__ . '/..' . '/laravel/nexmo-notification-channel/src',
-            1 => __DIR__ . '/..' . '/laravel/slack-notification-channel/src',
+            0 => __DIR__ . '/..' . '/laravel/slack-notification-channel/src',
+            1 => __DIR__ . '/..' . '/laravel/nexmo-notification-channel/src',
         ),
         'Illuminate\\' => 
         array (
@@ -1030,11 +1030,11 @@ class ComposerStaticInitd766ae561435d174f5349e61a1b52aa2
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitd766ae561435d174f5349e61a1b52aa2::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitd766ae561435d174f5349e61a1b52aa2::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInitd766ae561435d174f5349e61a1b52aa2::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitd766ae561435d174f5349e61a1b52aa2::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitd766ae561435d174f5349e61a1b52aa2::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit1cc37832480b2c2b76bd2a207bc0d92c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit1cc37832480b2c2b76bd2a207bc0d92c::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit1cc37832480b2c2b76bd2a207bc0d92c::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit1cc37832480b2c2b76bd2a207bc0d92c::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit1cc37832480b2c2b76bd2a207bc0d92c::$classMap;
 
         }, null, ClassLoader::class);
     }
