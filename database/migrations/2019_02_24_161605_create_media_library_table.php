@@ -15,7 +15,7 @@ class CreateMediaLibraryTable extends Migration
         Schema::create('media_library', function (Blueprint $table) {
             $table->increments('id');
             
-            $table->string('uuid')->unique()->nullable()->after('owner_type');
+            $table->string('uuid')->unique()->nullable();
             $table->integer('owner_id')->nullable();
             $table->string('owner_type')->nullable();
             $table->string('type')->nullable();
