@@ -30,6 +30,7 @@ class CreateMediaLibraryTable extends Migration
             $table->text('description')->nullable();
             $table->text('tags')->nullable();
 
+            $table->softDeletes();
             $table->timestamps();
         });
     }

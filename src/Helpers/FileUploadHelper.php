@@ -61,7 +61,7 @@ class FileUploadHelper {
         $mimeType = $sourceFile->getMimeType();
         
         $mediaLibraryData['format'] = $extension;
-        $mediaLibraryData['uploaded_by'] = $this->user->id;
+        $mediaLibraryData['uploaded_by'] = $this->user ? $this->user->id : null;
         $mediaLibraryData['filename'] = $filename;
         if(substr($mimeType, 0, 5) == 'image'){
 
