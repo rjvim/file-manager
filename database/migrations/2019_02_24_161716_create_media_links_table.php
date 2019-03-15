@@ -18,7 +18,8 @@ class CreateMediaLinksTable extends Migration
             $table->integer('media_library_id')->unsigned()->nullable();
             $table->integer('of_id')->nullable();
             $table->string('of_type')->nullable();
-            $table->string('type')->nullable();
+            $table->text('meta')->nullable(); // { role: , reason: }
+            $table->boolean('owner')->default(false);
 
             $table->timestamps();
         });

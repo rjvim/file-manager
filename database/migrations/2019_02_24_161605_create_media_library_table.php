@@ -16,19 +16,17 @@ class CreateMediaLibraryTable extends Migration
             $table->increments('id');
             
             $table->string('uuid')->unique()->nullable();
-            $table->integer('owner_id')->nullable();
-            $table->string('owner_type')->nullable();
-            $table->string('type')->nullable();
-            $table->string('format')->nullable();
-            $table->string('provider')->nullable();
+            $table->string('mime_type')->nullable();
+            $table->string('disk')->nullable(); //s3, cloudinary
             $table->string('path')->nullable();
             $table->integer('uploaded_by')->unsigned()->nullable();
 
-            $table->string('filename')->nullable();
-            $table->string('title')->nullable();
-            $table->string('alt')->nullable();
-            $table->text('description')->nullable();
-            $table->text('tags')->nullable();
+            $table->text('meta')->nullable(); // {file_name, summary, description}
+            $table->text('tags')->nullable(); // ["fishing","photography"]
+
+            /**
+                LIKE %fishing% OR LIKE %photo%
+            **/
 
             $table->softDeletes();
             $table->timestamps();

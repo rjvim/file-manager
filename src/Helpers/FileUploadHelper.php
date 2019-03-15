@@ -16,6 +16,7 @@ class FileUploadHelper {
     {
         $this->user = Auth::user();
     }
+
     public function uploadBase64Image($source_file,$file_name = '')
     {
         $sourceFile = $source_file;
@@ -44,6 +45,7 @@ class FileUploadHelper {
         }
         
     }
+    
     public function upload($source_file,$file_name = '')
     {
         $mediaLibraryData = [];

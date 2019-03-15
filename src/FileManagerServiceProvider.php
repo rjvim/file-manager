@@ -13,6 +13,10 @@ class FileManagerServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadRoutesFrom(__DIR__.'/../routes.php');
+
+        $this->publishes([
+            __DIR__.'/../config/file-manager.php' => config_path('file-manager.php'),
+        ], 'config');
     }
 
     /**
@@ -21,9 +25,9 @@ class FileManagerServiceProvider extends ServiceProvider
     public function register()
     {
         \Cloudinary::config([
-          'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-          'api_key' => env('CLOUDINARY_API_KEY'),
-          'api_secret' => env('CLOUDINARY_API_SECRET')
+          'cloud_name' => config('file-manager.cloudinary_cloud_name'),
+          'api_key' => config('file-manager.cloudinary_api_key'),
+          'api_secret' => config('file-manager.cloudinary_api_secret')
         ]);
     }
 }

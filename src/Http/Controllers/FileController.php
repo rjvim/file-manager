@@ -46,4 +46,11 @@ class FileController extends BaseController {
 
 	}
 
+	public function upload(Request $request)
+	{
+		// Upload images to S3 or Cloudinary?
+
+		dd($request->file('file')->getClientMimeType());
+	}
+
 }
