@@ -12,7 +12,7 @@ class CreateMediaLibraryTable extends Migration
      */
     public function up()
     {
-        Schema::create('media_library', function (Blueprint $table) {
+        Schema::create('file_manager_library', function (Blueprint $table) {
             $table->increments('id');
             
             $table->string('uuid')->unique()->nullable();
@@ -40,6 +40,6 @@ class CreateMediaLibraryTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('media_library');
+        Schema::dropIfExists('file_manager_library');
     }
 }
