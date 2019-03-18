@@ -4,6 +4,8 @@ namespace Betalectic\FileManager;
 
 use Illuminate\Support\ServiceProvider;
 use Betalectic\FileManager\Helpers;
+use Illuminate\Foundation\Application as LaravelApplication;
+use Laravel\Lumen\Application as LumenApplication;
 
 class FileManagerServiceProvider extends ServiceProvider
 {
@@ -12,14 +14,29 @@ class FileManagerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadRoutesFrom(__DIR__.'/../routes.php');
 
-        $this->publishes([
-            __DIR__.'/../config/file-manager.php' => config_path('file-manager.php'),
-        ], 'config');
+        $this->setUpConfig();
+        // $this->publishes([
+        //     __DIR__.'/../config/file-manager.php' => config_path('file-manager.php'),
+        // ], 'config');
 
         class_alias(Helpers::getDynamicController(), 'Betalectic\FileManager\Http\Controllers\DynamicController');
+    }
+
+    protected function setUpConfig()
+    {
+        $source = dirname(__DIR__) . '/config/file-manager.php';
+
+        if ($this->app instanceof LaravelApplication) {
+            $this->publishes([$source => config_path('file-manager.php')], 'config');
+        } elseif ($this->app instanceof LumenApplication) {
+            $this->app->configure('file-manager');
+        }
+
+        $this->mergeConfigFrom($source, 'file-manager');
     }
 
     /**
