@@ -6,6 +6,7 @@ return [
 	'cloudinary_api_secret' => env('CLOUDINARY_API_SECRET'),
 	'file_prefix' => '',
 	'file-system' => 's3', // Options: s3
-	'images' => 'cloudinary', // Options: cloudinary, s3,
-	'access' => 'public'
+	'save_images_to' => 'cloudinary', // Options: cloudinary, s3,
+	'access' => 'public',
+	'soft_delete' => false
 ];

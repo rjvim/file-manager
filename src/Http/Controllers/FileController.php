@@ -5,52 +5,82 @@ namespace Betalectic\FileManager\Http\Controllers;
 use Illuminate\Routing\Controller as BaseController;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Betalectic\FileManager\Models\MediaLibrary;
-use Auth;
+use Betalectic\FileManager\Models\Library;
 use Betalectic\FileManager\Http\Resources\File as FileResource;
-use Betalectic\FileManager\Helpers\CloudinaryHelper;
-use Betalectic\FileManager\Helpers\FileUploadHelper as UploadHelper;
+use Betalectic\FileManager\FileManager;
+
 
 class FileController extends BaseController {
 
 	public function index(Request $request)
 	{	
-		$images = MediaLibrary::where('filename','LIKE','%'.$request->get('q','').'%')
-							->orderBy('created_at','DESC')
-							->paginate(20);
+		$libraryBuilder = Library::orderBy('created_at','DESC');
 
-		return FileResource::collection($images);
-	}
+		if($request->has('type'))
+		{
+			switch ($request->type) {
+				case 'images':
+					$libraryBuilder = $libraryBuilder->where('mime_type','LIKE','image%');
+					break;
 
-	public function uploadFiles(Request $request)
-	{
-		$mediaLibrarys = [];
-		$fileObjects = $request->all();
-		$uploadHelper = new UploadHelper();
-	
-		for($i=0; $i<$fileObjects['no_of_files']; $i++) {
-
-			if($request->has('source') && $request->get('source') == 'base64') {
-				$mediaLibrarys[] = $uploadHelper->uploadBase64Image($request->get('file'.$i),$request->get('file_name'.$i));
-			} else {
-				$mediaLibrarys[] = $uploadHelper->upload($request->file('file'.$i),$request->get('file_name'.$i));
-
+				case 'documents':
+					$libraryBuilder = $libraryBuilder->where('mime_type','NOT LIKE','image%')
+						->orWhereNull('mime_type');
+					break;
+				
+				default:
+					# code...
+					break;
 			}
+		}
 
-			return response()->json([
-				'message' => 'Successfully uploaded',
-				'data' => $mediaLibrarys,
-				'success' => true],200);
-		} 
+		$files = $libraryBuilder->paginate(20);
 
+		return FileResource::collection($files);
 	}
 
-	public function upload(Request $request)
+	public function update(Request $request, $code)
 	{
-		// Upload images to S3 or Cloudinary?
+		$file = Library::whereUuid($code)->first();
+		$file->meta = $request->except('tags');
+		$file->tags = $request->get('tags',NULL);
+		$file->save();
 
-		dd($request->file('file')->getClientMimeType());
+		return response('success',200);
+	}
+
+	public function destroy($code)
+	{
+		$fileManager = new FileManager();
+		$fileManager->delete($code);
+
+		return response('success',200);
+	}
+
+	public function tags()
+	{
+		$tagsCollection = Library::select('tags')->get()->pluck('tags');
+
+		$tagsCollection = $tagsCollection->map(function ($item, $key) {
+		    return $item;
+		});
+
+		$tagsCollection = $tagsCollection->flatten()->unique();
+
+		$tagsCollection = $tagsCollection->map(function ($item, $key) {
+		    return $item;
+		});
+
+		$tags = [];
+
+		foreach($tagsCollection as $singleTag)
+		{
+			$tags[$singleTag] = $singleTag;
+		}
+
+		return $tags;
+
+		return json_encode($tagsCollection,JSON_FORCE_OBJECT);
 	}
 
 }

@@ -23,7 +23,7 @@ class CloudinaryHelper {
     {
         $result = \Cloudinary\Uploader::upload($localPath);
 
-        File::delete($localPath);
+        unlink($localPath);
 
         return $result;
     }

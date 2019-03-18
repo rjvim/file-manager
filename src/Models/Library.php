@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Betalectic\FileManager\Traits\UUIDTrait;
 
-class MediaLibrary extends Model {
+class Library extends Model {
 
     use SoftDeletes;
     use UUIDTrait;
 
-	protected $table = 'media_library';
+	protected $table = 'file_manager_library';
 
     protected $fillable = [];
 
@@ -20,6 +20,11 @@ class MediaLibrary extends Model {
     protected $dates = [];
 
     protected $UUIDCode = 'uuid';
+
+    protected $casts = [
+        'meta' => 'array',
+        'tags' => 'array',
+    ];
 
     public static $rules = [
         // Validation rules
@@ -33,25 +38,20 @@ class MediaLibrary extends Model {
             $model->uniquify();
         });
 
-        static::deleting(function ($media) {
+        static::deleting(function ($file) {
             
-            foreach($media->mediaLinks as $link)
+            foreach($file->attachments as $attachment)
             {
-                $link->delete();
+                $attachment->delete();
             }
 
         });
 
     }
 
-    public function owner()
+    public function attachments()
     {
-        return $this->morphTo();
-    }
-    
-    public function mediaLinks()
-    {
-    	return $this->hasMany('Betalectic\FileManager\Models\MediaLink','media_library_id');
+    	return $this->hasMany(Attachment::class,'library_id');
     }
 
 }

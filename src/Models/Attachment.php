@@ -1,11 +1,11 @@
 <?php 
-namespace Betalectic\FileManager\Models\SQL;
+namespace Betalectic\FileManager\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MediaLink extends Model {
+class Attachment extends Model {
 
-	protected $table = 'media_links';
+	protected $table = 'file_manager_attachments';
 
     protected $fillable = [];
 

@@ -28,6 +28,9 @@ class CreateMediaLibraryTable extends Migration
                 LIKE %fishing% OR LIKE %photo%
             **/
 
+            $table->string('owner_id')->nullable();
+            $table->string('owner_type')->nullable();
+
             $table->softDeletes();
             $table->timestamps();
         });
