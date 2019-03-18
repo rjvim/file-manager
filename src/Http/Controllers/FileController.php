@@ -2,31 +2,12 @@
 
 namespace Betalectic\FileManager\Http\Controllers;
 
-use Illuminate\Routing\Controller as BaseController;
-
-function get_dynamic_parent() {
-
-	if(class_exists(\Laravel\Lumen\Routing\Controller::class))
-	{
-		return 'Laravel\Lumen\Routing\Controller';
-	}
-
-	if(class_exists(\Illuminate\Routing\Controller::class))
-	{
-		return 'Illuminate\Routing\Controller';
-	}
-
-}
-
-class_alias(get_dynamic_parent(), 'Betalectic\FileManager\Http\Controllers\DynamicParent');
-
 use Illuminate\Http\Request;
 use Betalectic\FileManager\Models\Library;
 use Betalectic\FileManager\Http\Resources\File as FileResource;
 use Betalectic\FileManager\FileManager;
 
-
-class FileController extends DynamicParent {
+class FileController extends DynamicController {
 
 	public function index(Request $request)
 	{	

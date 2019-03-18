@@ -2,13 +2,11 @@
 
 namespace Betalectic\FileManager\Http\Controllers;
 
-use Illuminate\Routing\Controller as BaseController;
-
 use Illuminate\Http\Request;
 use Betalectic\FileManager\FileManager;
 use Illuminate\Support\Facades\Storage;
 
-class UploadSaveController extends BaseController {
+class UploadSaveController extends DynamicController {
 
 	public function store(Request $request)
 	{

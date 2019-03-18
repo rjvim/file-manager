@@ -3,6 +3,7 @@
 namespace Betalectic\FileManager;
 
 use Illuminate\Support\ServiceProvider;
+use Betalectic\FileManager\Helpers;
 
 class FileManagerServiceProvider extends ServiceProvider
 {
@@ -17,6 +18,8 @@ class FileManagerServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/file-manager.php' => config_path('file-manager.php'),
         ], 'config');
+
+        class_alias(Helpers::getDynamicController(), 'Betalectic\FileManager\Http\Controllers\DynamicController');
     }
 
     /**
