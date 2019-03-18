@@ -14,14 +14,10 @@ class FileManagerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadRoutesFrom(__DIR__.'/../routes.php');
 
         $this->setUpConfig();
-        // $this->publishes([
-        //     __DIR__.'/../config/file-manager.php' => config_path('file-manager.php'),
-        // ], 'config');
 
         class_alias(Helpers::getDynamicController(), 'Betalectic\FileManager\Http\Controllers\DynamicController');
     }
@@ -37,6 +33,12 @@ class FileManagerServiceProvider extends ServiceProvider
         }
 
         $this->mergeConfigFrom($source, 'file-manager');
+
+        \Cloudinary::config([
+          'cloud_name' => config('file-manager.cloudinary_cloud_name'),
+          'api_key' => config('file-manager.cloudinary_api_key'),
+          'api_secret' => config('file-manager.cloudinary_api_secret')
+        ]);
     }
 
     /**
@@ -44,10 +46,6 @@ class FileManagerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        \Cloudinary::config([
-          'cloud_name' => config('file-manager.cloudinary_cloud_name'),
-          'api_key' => config('file-manager.cloudinary_api_key'),
-          'api_secret' => config('file-manager.cloudinary_api_secret')
-        ]);
+
     }
 }
