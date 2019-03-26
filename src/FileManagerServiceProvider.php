@@ -19,7 +19,7 @@ class FileManagerServiceProvider extends ServiceProvider
 
         $this->setUpConfig();
 
-        class_alias(Helpers::getDynamicController(), 'Betalectic\FileManager\Http\Controllers\DynamicController');
+        // class_alias(Helpers::getDynamicController(), 'Betalectic\FileManager\Http\Controllers\DynamicController');
     }
 
     protected function setUpConfig()

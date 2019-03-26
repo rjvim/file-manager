@@ -27,10 +27,7 @@
     "autoload": {
         "psr-4": {
             "Betalectic\\FileManager\\": "src"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
