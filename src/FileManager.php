@@ -105,4 +105,17 @@ class FileManager {
 		return true;
 	}
 
+	public function attach($file, $entity, $meta = [], $owner = false)
+	{
+		$attachment = Attachment::firstOrCreate([
+			'library_id' => $file->id,
+			'of_id' => $entity->getKey(),
+			'of_type' => get_class($entity),		
+		]);
+
+		$attachment->meta = $meta;
+		$attachment->owner = $owner;
+		$attachment->save();
+	}
+
 }
