@@ -118,4 +118,19 @@ class FileManager {
 		$attachment->save();
 	}
 
+	public function detach($file, $entity)
+	{
+		$attachment = Attachment::where([
+			'library_id' => $file->id,
+			'of_id' => $entity->getKey(),
+			'of_type' => get_class($entity),		
+		])->first();
+
+		if(!is_null($attachment))
+		{
+			$attachment->delete();
+		}
+		
+		return true;
+	}
 }
