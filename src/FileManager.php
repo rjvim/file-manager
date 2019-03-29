@@ -16,6 +16,42 @@ class FileManager {
 
 	}
 
+	public function savePath($file, $fileName = NULL, $owner = NULL)
+	{
+
+		$fullPath = storage_path('app/files/'.basename($pathOnDisk));
+		$uploadedFile = $this->upload($fullPath);
+
+		$file = $this->save(
+			$uploadedFile['url'],
+			$uploadedFile['disk'],
+			$uploadedFile['mime_type'],
+			$request->get('uploader',NULL),
+			$request->get('tags',NULL),
+			[
+				'file_name' => $fileName
+			]
+		);
+
+		if(!is_null($owner))
+		{
+			$this->setOwner($file->uuid, $owner->getKey(),get_class($owner));
+		}
+
+		return $file;
+
+	}
+
+	public function saveBase64Image($sourceFile, $fileName = NULL, $owner = NULL)
+	{
+		$savedFile = $this->saveBase64ToDisk($sourceFile);
+		$pathOnDisk = $savedFile['path'];
+		$fileName = is_null($fileName) ? $savedFile['name'] : $fileName;
+
+		return $this->savePath($pathOnDisk, $fileName, $owner);
+
+	}
+
 	public function saveBase64ToDisk($base64String)
 	{
 		$extension = explode('/', explode(':', substr($base64String, 0, strpos($base64String, ';')))[1])[1];
@@ -118,19 +154,4 @@ class FileManager {
 		$attachment->save();
 	}
 
-	public function detach($file, $entity)
-	{
-		$attachment = Attachment::where([
-			'library_id' => $file->id,
-			'of_id' => $entity->getKey(),
-			'of_type' => get_class($entity),		
-		])->first();
-
-		if(!is_null($attachment))
-		{
-			$attachment->delete();
-		}
-		
-		return true;
-	}
 }
