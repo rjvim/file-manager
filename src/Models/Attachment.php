@@ -13,6 +13,9 @@ class Attachment extends Model {
     
     protected $dates = [];
 
+    protected $casts = [
+            'meta' => 'array',
+        ];
     public static $rules = [
         // Validation rules
     ];

@@ -16,23 +16,23 @@ class FileManager {
 
 	}
 
-	public function savePath($file, $fileName = NULL, $owner = NULL)
+	public function savePath($file, $fileName = NULL, $owner = NULL,$uploader = NULL,$tags = NULL)
 	{
-
-		$fullPath = storage_path('app/files/'.basename($pathOnDisk));
+		$fullPath = storage_path('app/files/'.basename($file));
+		
 		$uploadedFile = $this->upload($fullPath);
 
 		$file = $this->save(
 			$uploadedFile['url'],
 			$uploadedFile['disk'],
 			$uploadedFile['mime_type'],
-			$request->get('uploader',NULL),
-			$request->get('tags',NULL),
+			$uploader,
+			$tags,
 			[
 				'file_name' => $fileName
 			]
 		);
-
+		
 		if(!is_null($owner))
 		{
 			$this->setOwner($file->uuid, $owner->getKey(),get_class($owner));
@@ -42,13 +42,13 @@ class FileManager {
 
 	}
 
-	public function saveBase64Image($sourceFile, $fileName = NULL, $owner = NULL)
+	public function saveBase64Image($sourceFile, $fileName = NULL, $owner = NULL, $uploader = NULL)
 	{
 		$savedFile = $this->saveBase64ToDisk($sourceFile);
 		$pathOnDisk = $savedFile['path'];
 		$fileName = is_null($fileName) ? $savedFile['name'] : $fileName;
 
-		return $this->savePath($pathOnDisk, $fileName, $owner);
+		return $this->savePath($pathOnDisk, $fileName, $owner, $uploader);
 
 	}
 
@@ -83,14 +83,12 @@ class FileManager {
 		}
 		else
 		{
-
 			$s3Key = config('file-manager.file_prefix');
-			$s3Key = Storage::disk('s3')->putFileAs($s3Key,$file,$file->getFilename());
+			$s3Key = Storage::disk('s3')->putFileAs($s3Key,$file,$file->getFilename(),'public');
 			$url = Storage::disk('s3')->url($s3Key);
-			unlink($pathToFile);
 			$disk = 's3';
 		}
-
+		
 		return ['url' => $url, 'disk' => $disk, 'mime_type' => $mimeType];
 	}
 
