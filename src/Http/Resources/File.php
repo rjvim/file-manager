@@ -32,26 +32,20 @@ class File extends JsonResource
 
         if($this->disk == 'cloudinary')
         {
-
             $cloudinaryHelper = new CloudinaryHelper();
-
             $img_sizes = [];
-
             if($request->has('img_sizes')){
                 $img_sizes = explode(',', $request->get('img_sizes'));
             }
-
             $data['wh_100_100'] = $cloudinaryHelper->createUrl($this->path,100,100);
             $data['icon'] = $cloudinaryHelper->createUrl($this->path,100,100);
+            foreach($img_sizes as $img_size) {
 
-            foreach($img_sizes as $img_size)
-            {
                 list($w,$h) = explode("-", $img_size);
                 $data['wh_'.$w.'_'.$h] = $cloudinaryHelper->createUrl($this->path,$w,$h);
             }
-
         }
-
+        
         return $data;
         
     }
