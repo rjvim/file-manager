@@ -189,6 +189,10 @@ class FileManager {
             $search->setPage($filters['page']);
         }
 
+        if(isset($filters['excluded_library_ids']) && !empty($filters['excluded_library_ids'])) {
+            $search->setExcludedLibraryIds($filters['excluded_library_ids']);
+        }
+
         return $search->getFromLibrary();
     }
 

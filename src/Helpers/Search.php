@@ -62,6 +62,10 @@ class Search {
                             ->orWhere('tags','LIKE','%'.$q.'%');
         }
 
+        if(!is_null($this->excludedLibraryIds)) {
+            $this->query = $this->query->whereNotIn('id',$this->excludedLibraryIds);
+        }
+
         $this->query = $this->query->orderBy('created_at','desc');
 
         $files = !is_null($this->per_page) ?
