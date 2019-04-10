@@ -43,13 +43,36 @@ class Search {
     }
     public function setExcludedLibraryIds($ids)
     {
-        $this->excludedLibraryIds = $ids;   
+        $this->excludedLibraryIds = $ids;
+    }
+
+    public function getFromLibrary()
+    {
+        $files = [];
+
+        $this->query = new Library();
+
+        if($this->q != '') {
+
+            $q = $this->q;
+
+            $this->query = $this
+                            ->query
+                            ->where('meta','LIKE','%'.$q.'%')
+                            ->orWhere('tags','LIKE','%'.$q.'%');
+        }
+
+        $this->query = $this->query->orderBy('created_at','desc');
+
+        $files = !is_null($this->per_page) ?
+                            $this->query->paginate($this->per_page) : $this->query->get();
+        return  $files;
     }
 
     public function get()
     {
         $attachments = [];
-        
+
         $this->query = Attachment::with('library','of');
 
         if($this->q != '') {
@@ -89,11 +112,11 @@ class Search {
 
         $this->query->orderBy('created_at','desc');
 
-        $attachments = !is_null($this->per_page) ? 
+        $attachments = !is_null($this->per_page) ?
                             $this->query->paginate($this->per_page) : $this->query->get();
         return  $attachments;
-            
+
     }
 
-    
+
 }
