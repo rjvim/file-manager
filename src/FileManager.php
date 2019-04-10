@@ -8,47 +8,55 @@ use Betalectic\FileManager\Helpers\CloudinaryHelper;
 use Intervention\Image\ImageManagerStatic;
 use Betalectic\FileManager\Models\Library;
 use Betalectic\FileManager\Models\Attachment;
+use Betalectic\FileManager\Helpers\Search;
+use Betalectic\FileManager\Helpers\Reader as FileReader;
+
 
 class FileManager {
 
+	public $fileReader; 
+
 	public function __construct()
 	{
-
+		$this->fileReader = new FileReader();
 	}
 
-	public function savePath($file, $fileName = NULL, $owner = NULL)
+	public function savePath($file, $fileName = NULL, $owner = NULL,$uploader = NULL,$tags = NULL,$entities = [])
 	{
-
-		$fullPath = storage_path('app/files/'.basename($pathOnDisk));
+		$fullPath = storage_path('app/files/'.basename($file));
+		
 		$uploadedFile = $this->upload($fullPath);
 
 		$file = $this->save(
 			$uploadedFile['url'],
 			$uploadedFile['disk'],
 			$uploadedFile['mime_type'],
-			$request->get('uploader',NULL),
-			$request->get('tags',NULL),
+			$uploader,
+			$tags,
 			[
 				'file_name' => $fileName
 			]
 		);
-
-		if(!is_null($owner))
-		{
+		
+		if(!is_null($owner)) {
 			$this->setOwner($file->uuid, $owner->getKey(),get_class($owner));
 		}
 
-		return $file;
+		if(!empty($entities)) {
+			foreach ($entities as $entity) {
+				$this->attach($file,$entity, $meta = [], $owner = false);
+			}
+		}
 
+		return $file;
 	}
 
-	public function saveBase64Image($sourceFile, $fileName = NULL, $owner = NULL)
+	public function saveBase64Image($sourceFile, $fileName = NULL, $owner = NULL, $uploader = NULL)
 	{
 		$savedFile = $this->saveBase64ToDisk($sourceFile);
 		$pathOnDisk = $savedFile['path'];
 		$fileName = is_null($fileName) ? $savedFile['name'] : $fileName;
-
-		return $this->savePath($pathOnDisk, $fileName, $owner);
+		return $this->savePath($pathOnDisk, $fileName, $owner, $uploader);
 
 	}
 
@@ -83,19 +91,18 @@ class FileManager {
 		}
 		else
 		{
-
 			$s3Key = config('file-manager.file_prefix');
-			$s3Key = Storage::disk('s3')->putFileAs($s3Key,$file,$file->getFilename());
+			$s3Key = Storage::disk('s3')->putFileAs($s3Key,$file,$file->getFilename(),'public');
 			$url = Storage::disk('s3')->url($s3Key);
-			unlink($pathToFile);
 			$disk = 's3';
 		}
-
+		
 		return ['url' => $url, 'disk' => $disk, 'mime_type' => $mimeType];
 	}
 
 	public function save($path, $disk = NULL, $mimeType = NULL, $uploader = NULL, $tags = NULL, $meta = [])
 	{
+
 		$file = Library::firstOrCreate(['path' => $path]);
 		$file->fill([
 			'disk' => $disk,
@@ -152,6 +159,82 @@ class FileManager {
 		$attachment->meta = $meta;
 		$attachment->owner = $owner;
 		$attachment->save();
+		return true;
 	}
+
+	public function bulkAttach($library_ids,$entities, $meta = [], $owner = false)
+	{
+		$libraries = Library::whereIn('id',$library_ids)->get();
+
+		foreach ($libraries as $library) {
+			foreach ($entities as $entity) {
+				$this->attach($library,$entity,$meta,$owner);
+			}
+		}
+		
+		return true;
+	}
+
+	public function search($filters)
+	{
+
+		$search = new Search();
+		
+		if(isset($filters['q']) && !empty($filters['q'])) {
+			$search->setQuery($filters['q']);
+		}
+		if(isset($filters['of_id']) && !empty($filters['of_id'])) {
+			$search->setOfId($filters['of_id']);
+		}
+		if(isset($filters['of_type']) && !empty($filters['of_type'])) {
+			$search->setOfType($filters['of_type']);
+		}
+		if(isset($filters['per_page']) && !empty($filters['per_page'])) {
+			$search->setPerPage($filters['per_page']);
+		}
+		if(isset($filters['page']) && !empty($filters['page'])) {
+			$search->setPage($filters['page']);
+		}
+		if(isset($filters['type']) && !empty($filters['type'])) {
+			$search->setType($filters['type']);
+		}
+		if(isset($filters['excluded_library_ids']) && !empty($filters['excluded_library_ids'])) {
+			$search->setExcludedLibraryIds($filters['excluded_library_ids']);
+		}
+
+		
+		return $search->get();
+	}
+
+	public function update($code, $data)
+	{
+		$file = Library::whereUuid($code)->first();
+		$file->meta = array_except($data, ['tags']);
+		$file->tags = $data['tags'];
+		$file->save();
+
+		return true;
+	}
+
+	public function removeAttachment($id)
+	{
+		Attachment::find($id)->delete();
+		return true;
+	}
+
+	public function getAttachments($library_id = null,$filters =[])
+	{	
+		if(isset($library_id) && !empty($library_id)) {
+			$this->fileReader->setLibraryId($library_id);
+		}
+		if(!empty($filters)) {
+			$this->fileReader->setFilters($filters);
+		}
+		return $this->fileReader->get($filters);
+	
+	}
+	
+
+
 
 }

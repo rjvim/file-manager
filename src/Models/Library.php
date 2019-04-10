@@ -26,6 +26,14 @@ class Library extends Model {
         'tags' => 'array',
     ];
 
+    protected function castAttribute($key, $value)
+    {
+        if ($this->getCastType($key) == 'array' && is_null($value)) {
+            return [];
+        }
+        return parent::castAttribute($key, $value);
+    }
+
     public static $rules = [
         // Validation rules
     ];
@@ -53,5 +61,10 @@ class Library extends Model {
     {
     	return $this->hasMany(Attachment::class,'library_id');
     }
+    public function owner() 
+    {
+        return $this->morphTo();
+    }
+
 
 }
