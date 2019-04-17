@@ -13,17 +13,17 @@ use Betalectic\FileManager\Helpers\Reader as FileReader;
 
 class FileManager {
 
-	public $fileReader; 
+	public $fileReader;
 
 	public function __construct()
 	{
 		$this->fileReader = new FileReader();
 	}
 
-	public function savePath($file, $fileName = NULL, $owner = NULL,$uploader = NULL,$tags = NULL,$entities = [])
+	public function savePath($file, $fileName = NULL, $owner = NULL, $uploader = NULL, $tags = NULL, $entities = [])
 	{
 		$fullPath = storage_path('app/files/'.basename($file));
-		
+
 		$uploadedFile = $this->upload($fullPath);
 
 		$file = $this->save(
@@ -36,14 +36,14 @@ class FileManager {
 				'file_name' => $fileName
 			]
 		);
-		
+
 		if(!is_null($owner)) {
 			$this->setOwner($file->uuid, $owner->getKey(),get_class($owner));
 		}
 
 		if(!empty($entities)) {
 			foreach ($entities as $entity) {
-				$this->attach($file,$entity, $meta = [], $owner = false);
+				$this->attach($file,$entity,$meta = [],$owner = false);
 			}
 		}
 
@@ -95,7 +95,7 @@ class FileManager {
 			$url = Storage::disk('s3')->url($s3Key);
 			$disk = 's3';
 		}
-		
+
 		return ['url' => $url, 'disk' => $disk, 'mime_type' => $mimeType];
 	}
 
@@ -152,7 +152,7 @@ class FileManager {
 		$attachment = Attachment::firstOrCreate([
 			'library_id' => $file->id,
 			'of_id' => $entity->getKey(),
-			'of_type' => get_class($entity),		
+			'of_type' => get_class($entity),
 		]);
 
 		$attachment->meta = $meta;
@@ -170,15 +170,36 @@ class FileManager {
 				$this->attach($library,$entity,$meta,$owner);
 			}
 		}
-		
+
 		return true;
 	}
+
+    public function searchLibrary($filters = [])
+    {
+        $search = new Search();
+
+        if(isset($filters['q']) && !empty($filters['q'])) {
+            $search->setQuery($filters['q']);
+        }
+        if(isset($filters['per_page']) && !empty($filters['per_page'])) {
+            $search->setPerPage($filters['per_page']);
+        }
+        if(isset($filters['page']) && !empty($filters['page'])) {
+            $search->setPage($filters['page']);
+        }
+
+        if(isset($filters['excluded_library_ids']) && !empty($filters['excluded_library_ids'])) {
+            $search->setExcludedLibraryIds($filters['excluded_library_ids']);
+        }
+
+        return $search->getFromLibrary();
+    }
 
 	public function search($filters)
 	{
 
 		$search = new Search();
-		
+
 		if(isset($filters['q']) && !empty($filters['q'])) {
 			$search->setQuery($filters['q']);
 		}
@@ -200,7 +221,7 @@ class FileManager {
 		if(isset($filters['excluded_library_ids']) && !empty($filters['excluded_library_ids'])) {
 			$search->setExcludedLibraryIds($filters['excluded_library_ids']);
 		}
-		
+
 		return $search->get();
 	}
 
@@ -226,7 +247,7 @@ class FileManager {
 	}
 
 	public function getAttachments($library_id = null,$filters =[])
-	{	
+	{
 		if(isset($library_id) && !empty($library_id)) {
 			$this->fileReader->setLibraryId($library_id);
 		}
@@ -234,9 +255,9 @@ class FileManager {
 			$this->fileReader->setFilters($filters);
 		}
 		return $this->fileReader->get($filters);
-	
+
 	}
-	
+
 
 
 
