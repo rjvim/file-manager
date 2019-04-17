@@ -11,7 +11,6 @@ use Betalectic\FileManager\Models\Attachment;
 use Betalectic\FileManager\Helpers\Search;
 use Betalectic\FileManager\Helpers\Reader as FileReader;
 
-
 class FileManager {
 
 	public $fileReader; 
@@ -201,7 +200,6 @@ class FileManager {
 		if(isset($filters['excluded_library_ids']) && !empty($filters['excluded_library_ids'])) {
 			$search->setExcludedLibraryIds($filters['excluded_library_ids']);
 		}
-
 		
 		return $search->get();
 	}
@@ -218,8 +216,13 @@ class FileManager {
 
 	public function removeAttachment($id)
 	{
-		Attachment::find($id)->delete();
-		return true;
+		$attachment = Attachment::find($id);
+		if(!empty($attachment)) {
+			$attachment->delete();
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public function getAttachments($library_id = null,$filters =[])
