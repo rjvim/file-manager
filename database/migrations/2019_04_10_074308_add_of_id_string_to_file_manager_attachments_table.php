@@ -23,6 +23,6 @@ class AddOfIdStringToFileManagerAttachmentsTable extends Migration
      */
     public function down()
     {
-        DB::statement('ALTER TABLE "public"."file_manager_attachments" ALTER COLUMN "of_id" TYPE integer');
+        DB::statement('ALTER TABLE "public"."file_manager_attachments" ALTER COLUMN "of_id" TYPE character varying(255)');
     }
 }
