@@ -258,6 +258,55 @@ class FileManager {
 
 	}
 
+	public function dowloadUsingUrl($url)
+	{
+		$library = Library::where('path',$url)->first();
+		if(!empty($library)) {
+			return $this->dowload($library);
+		} else  {
+			return false;
+		}
+
+	}
+
+
+	public function dowloadUsingAttament($id)
+	{
+		$attachment = Attachment::find($id);
+
+		if(!empty($attachment)) {
+
+			$library = $attachment->library;
+			
+			return $this->dowload($library);
+
+		} else {
+			return false;
+		}
+	}
+
+	public function dowload($library)
+	{	
+		$file = file_get_contents($library->path);
+		
+		$callback = function() use ($file)   
+        {   
+        	$FH = fopen('php://output', 'w');   
+            fputs($FH, $file); 
+            fclose($FH);    
+        };  
+        
+        $headers = [    
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0'   
+            ,   'Content-type'        =>  $library->mime_type
+            ,   'Content-Disposition' => 'attachment; filename='.$library->meta['file_name'] 
+            ,   'Expires'             => '0'    
+            ,   'Pragma'              => 'public'   
+        ];  
+
+        return ['file' => $callback , 'headers' => $headers];
+	}
+
 
 
 
