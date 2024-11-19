@@ -90,9 +90,10 @@ class FileManager {
 		}
 		else
 		{
-			$s3Key = config('file-manager.file_prefix');
-			$s3Key = Storage::disk('s3')->putFileAs($s3Key,$file,$file->getFilename(),'public');
-			$url = Storage::disk('s3')->url($s3Key);
+			// $s3Key = config('file-manager.file_prefix');
+			// $s3Key = Storage::disk('s3')->putFileAs($s3Key,$file,$file->getFilename(),'public');
+			// $url = Storage::disk('s3')->url($s3Key);
+			$url = \App\Files\S3Helper::uploadFile($file);
 			$disk = 's3';
 		}
 
